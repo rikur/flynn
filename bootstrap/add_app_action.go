@@ -40,6 +40,12 @@ func (a *AddAppAction) Run(s *State) error {
 		return err
 	}
 
+	// Cleanse the temporary DISCOVERD="none" variable used
+	// to start services before discoverd is available.
+	if data.Release.Env["DISCOVERD"] == "none" {
+		delete(data.Release.Env, "DISCOVERD")
+	}
+
 	a.App.ID = data.App.ID
 	if err := client.CreateApp(a.App); err != nil {
 		return err
