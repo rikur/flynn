@@ -76,6 +76,11 @@
   "provisioners": [
     {
       "type": "shell",
+      "inline": ["sleep 60"],
+      "only": ["amazon-ebs"]
+    },
+    {
+      "type": "shell",
       "scripts": [
         "scripts/upgrade.sh",
         "scripts/install.sh"
