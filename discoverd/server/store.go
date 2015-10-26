@@ -184,8 +184,8 @@ func (s *Store) Open() error {
 	s.raft = r
 
 	// Start goroutine to check for instance expiry.
-	s.wg.Add(1)
-	go s.expirer()
+	//s.wg.Add(1)
+	//go s.expirer()
 
 	return nil
 }
