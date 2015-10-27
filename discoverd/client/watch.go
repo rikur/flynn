@@ -102,6 +102,7 @@ func (s *service) Watch(ch chan *Event) (stream.Stream, error) {
 	var events chan *Event
 	watch := NewWatch()
 	connect := func() error {
+		fmt.Println("Connecting discoverd watch")
 		events = make(chan *Event)
 		stream, err := s.client.c.Stream("GET", fmt.Sprintf("/services/%s", s.name), nil, events)
 		if err != nil {
@@ -109,6 +110,7 @@ func (s *service) Watch(ch chan *Event) (stream.Stream, error) {
 		}
 		watch.stream = stream
 		watch.maybeSendState(WatchStateConnected)
+		fmt.Println("Connected discoverd watch")
 		return nil
 	}
 	if err := connect(); err != nil {
@@ -133,8 +135,10 @@ func (s *service) Watch(ch chan *Event) (stream.Stream, error) {
 					isCurrent = false
 					current = make(map[string]*Instance)
 					watch.maybeSendState(WatchStateDisconnected)
+					fmt.Println("discoverd watch disconnected, attempting reconnect")
 					if err := connectAttempts.Run(connect); err != nil {
 						watch.err = err
+						fmt.Println("reconnect failed, closing watch")
 						return
 					}
 					continue
